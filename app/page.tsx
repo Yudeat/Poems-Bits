@@ -1,7 +1,7 @@
 import React from 'react'
-import DarkVeil from './component/back'
 import CardNav from './component/dashBoard'
 import InfiniteScroll from './components/InfiniteScroll'
+
 const page = () => {
   const i = [
   { content: "Text Item 1" },
@@ -51,9 +51,7 @@ const items = [
   ];
   return (
     <>
-   <div style={{ width: '100%', height: '600px', position: 'relative' }}>
-  <DarkVeil />
-</div>
+<main>
 <CardNav
       logo="logo.png"
       logoAlt="Company Logo"
@@ -75,6 +73,7 @@ const items = [
   />
 </div>
 
+</main>
     </>
      
   )

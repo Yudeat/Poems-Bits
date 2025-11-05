@@ -41,7 +41,7 @@ const CardNav: React.FC<CardNavProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const navRef = useRef<HTMLDivElement | null>(null);
 
-  // ✅ Click outside to close
+ 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
@@ -61,9 +61,9 @@ const CardNav: React.FC<CardNavProps> = ({
         className={`card-nav block p-0 rounded-xl shadow-md relative overflow-hidden`}
         style={{ backgroundColor: baseColor }}
       >
-        {/* 🔹 Top bar */}
+       
         <div className="card-nav-top relative z-[2] h-[60px] flex items-center justify-between p-2 pl-[1.1rem]">
-          {/* Hamburger */}
+         
           <div
             onClick={() => setIsExpanded((prev) => !prev)}
             className="hamburger group flex flex-col gap-[6px] cursor-pointer "
