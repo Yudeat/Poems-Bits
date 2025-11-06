@@ -1,24 +1,8 @@
 import React from 'react'
 import CardNav from './component/dashBoard'
-import InfiniteScroll from './components/InfiniteScroll'
 
 const page = () => {
-  const i = [
-  { content: "Text Item 1" },
-  { content: <p>Paragraph Item 2</p> },
-  { content: "Text Item 3" },
-  { content: <p>Paragraph Item 4</p> },
-  { content: "Text Item 5" },
-  { content: <p>Paragraph Item 6</p> },
-  { content: "Text Item 7" },
-  { content: <p>Paragraph Item 8</p> },
-  { content: "Text Item 9" },
-  { content: <p>Paragraph Item 10</p> },
-  { content: "Text Item 11" },
-  { content: <p>Paragraph Item 12</p> },
-  { content: "Text Item 13" },
-  { content: <p>Paragraph Item 14</p> },
-];
+
 const items = [
     {
       label: "About",
@@ -43,7 +27,7 @@ const items = [
       bgColor: "#271E37", 
       textColor: "#fff",
       links: [
-        { label: "Email", ariaLabel: "Email us", href: "mailto:info@example.com" },
+        { label: "Email", ariaLabel: "Email us", href: "poemsbits@gmailcom" },
         { label: "Twitter", ariaLabel: "Twitter", href: "https://twitter.com/example" },
         { label: "LinkedIn", ariaLabel: "LinkedIn", href: "https://linkedin.com/company/example" }
       ]
@@ -61,17 +45,7 @@ const items = [
       buttonBgColor="#111"
       buttonTextColor="#fff"
     />
-<div style={{height: '500px', position: 'relative'}}>
-  <InfiniteScroll
-    items={i}
-    isTilted={true}
-    tiltDirection='left'
-    autoplay={true}
-    autoplaySpeed={0.1}
-    autoplayDirection="down"
-    pauseOnHover={true}
-  />
-</div>
+
 
 </main>
     </>

@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GoArrowUpRight } from "react-icons/go";
+import { FaSun, FaMoon } from "react-icons/fa";
 
 type CardNavLink = {
   label: string;
@@ -39,9 +40,10 @@ const CardNav: React.FC<CardNavProps> = ({
   buttonTextColor = "#fff",
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
   const navRef = useRef<HTMLDivElement | null>(null);
 
- 
+  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
@@ -52,22 +54,36 @@ const CardNav: React.FC<CardNavProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Apply theme to body
+  useEffect(() => {
+    document.body.classList.remove("light", "dark");
+    document.body.classList.add(theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
   return (
     <div
       className={`card-nav-container absolute left-1/2 -translate-x-1/2 w-[90%] max-w-[800px] z-[99] top-[1.2em] md:top-[2em] ${className}`}
     >
       <nav
         ref={navRef}
-        className={`card-nav block p-0 rounded-xl shadow-md relative overflow-hidden`}
-        style={{ backgroundColor: baseColor }}
+        className={`card-nav block p-0 rounded-xl shadow-md relative overflow-hidden transition-colors duration-300`}
+        style={{
+          backgroundColor: theme === "light" ? baseColor : "#1a1a1a",
+          color: theme === "light" ? "#000" : "#fff",
+        }}
       >
-       
         <div className="card-nav-top relative z-[2] h-[60px] flex items-center justify-between p-2 pl-[1.1rem]">
-         
+          {/* Hamburger */}
           <div
             onClick={() => setIsExpanded((prev) => !prev)}
-            className="hamburger group flex flex-col gap-[6px] cursor-pointer "
-            style={{ color: menuColor }}
+            className="hamburger group flex flex-col gap-[6px] cursor-pointer"
+            style={{
+              color: theme === "light" ? menuColor : "#fff",
+            }}
           >
             <span
               className={`block w-[30px] h-[2px] bg-current transition-transform duration-300 ${
@@ -83,22 +99,48 @@ const CardNav: React.FC<CardNavProps> = ({
 
           {/* Logo */}
           <div className="logo-container flex items-center justify-center md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
-            <img src={logo} alt={logoAlt} className="h-[28px]" />
+            <img
+              src={logo}
+              alt={logoAlt}
+              className={`h-[28px] transition-all duration-300 ${
+                theme === "dark" ? "invert brightness-200" : ""
+              }`}
+            />
           </div>
 
-          {/* CTA Button */}
-          <button
-            className="hidden md:inline-flex border-0 rounded-lg px-4 py-2 font-medium cursor-pointer transition-colors duration-300"
-            style={{
-              backgroundColor: buttonBgColor,
-              color: buttonTextColor,
-            }}
-          >
-            Log In 
-          </button>
+          {/* Right-side buttons */}
+          <div className="flex items-center gap-4 pr-2 md:pr-3">
+            {/* Theme toggle */}
+            <button
+              onClick={toggleTheme}
+              className="rounded-full p-2 border border-gray-300 dark:border-gray-600 transition-all duration-300 hover:scale-110"
+              style={{
+                backgroundColor: theme === "light" ? "#f0f0f0" : "#333",
+                color: theme === "light" ? "#000" : "#fff",
+              }}
+              aria-label="Toggle dark mode"
+            >
+              {theme === "light" ? (
+                <FaMoon className="text-[18px]" />
+              ) : (
+                <FaSun className="text-[18px]" />
+              )}
+            </button>
+
+            {/* CTA Button */}
+            <button
+              className="hidden md:inline-flex border-0 rounded-lg px-4 py-2 font-medium cursor-pointer transition-all duration-300 hover:opacity-90"
+              style={{
+                backgroundColor: buttonBgColor,
+                color: buttonTextColor,
+              }}
+            >
+              Log In
+            </button>
+          </div>
         </div>
 
-        {/* 🔹 Animated menu */}
+        {/* Menu */}
         <AnimatePresence>
           {isExpanded && (
             <motion.div
@@ -137,10 +179,7 @@ const CardNav: React.FC<CardNavProps> = ({
                         aria-label={lnk.ariaLabel}
                         className="flex items-center gap-[6px] text-[15px] md:text-[16px] hover:opacity-75 transition-opacity"
                       >
-                        <GoArrowUpRight
-                          className="shrink-0"
-                          aria-hidden="true"
-                        />
+                        <GoArrowUpRight className="shrink-0" aria-hidden="true" />
                         {lnk.label}
                       </a>
                     ))}

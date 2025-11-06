@@ -125,3 +125,15 @@ body {
     @apply bg-background text-foreground;
   }
 }
+body {
+  background-color: rgb(221, 213, 213);
+}
+body.light {
+  background-color: #fdfdfd;
+  color: #111;
+}
+
+body.dark {
+  background-color: #111;
+  color: #fdfdfd;
+}
