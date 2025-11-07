@@ -3,6 +3,14 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono ,Playfair_Display} from "next/font/google";
 import "./globals.css";
 import ThemeClientWrapper from "./ThemeWrapper";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from '@clerk/nextjs'
 
 
 const playfair = Playfair_Display({
@@ -32,6 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider>
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeClientWrapper>
@@ -39,5 +48,6 @@ export default function RootLayout({
         </ThemeClientWrapper>
       </body>
     </html>
+    </ClerkProvider>
   );
 }

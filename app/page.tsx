@@ -4,6 +4,7 @@ import React from 'react';
 import { motion, Variants } from 'framer-motion';
 import Threads from './component/paragraph';
 import NavbarWrapper from './component/wraper'; // theme wrapper + nav
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 
 const Page = () => {
   // Animation variants
@@ -64,6 +65,8 @@ const Page = () => {
             viewport={{ once: true, amount: 0.5 }}
             transition={{ delay: 0.3 }}
           >
+         <SignedOut>
+              <SignInButton mode="modal">
             <button className="md:hidden relative items-center justify-center rounded-lg px-4 py-2 font-medium cursor-pointer overflow-hidden transition-all duration-300 group">
               {/* Animated glowing border */}
               <span className="absolute inset-0 rounded-lg bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#2af598,#ff0080)] animate-border-spin opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[1px]"></span>
@@ -77,6 +80,13 @@ const Page = () => {
            
               <span className="relative z-10">Log In</span>
             </button>
+          </SignInButton>
+            </SignedOut>
+
+            {/* User avatar when signed in */}
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
           </motion.div>
         </section>
       </main>

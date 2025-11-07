@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoArrowUpRight } from 'react-icons/go';
 import { FaSun, FaMoon } from 'react-icons/fa';
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 
 export type CardNavLink = {
   label: string;
@@ -68,7 +69,7 @@ const CardNav: React.FC<CardNavProps> = ({
           border: theme === 'dark' ? '1px solid rgba(255,255,255,0.2)' : 'none',
           backdropFilter: 'blur(10px)',
         }}
-        layout // smooth transition on theme change
+        layout // smooth theme transition
       >
         {/* Top Bar */}
         <div className="card-nav-top relative z-[2] h-[60px] flex items-center justify-between p-2 pl-[1.1rem]">
@@ -118,17 +119,28 @@ const CardNav: React.FC<CardNavProps> = ({
               {theme === 'light' ? <FaMoon /> : <FaSun />}
             </motion.button>
 
-            {/* CTA Button */}
-            <motion.button
-              className="hidden md:inline-flex border-0 rounded-lg px-4 py-2 font-medium cursor-pointer transition-all duration-300 hover:opacity-90"
-              style={{
-                backgroundColor: theme === 'light' ? '#111' : '#fff',
-                color: theme === 'light' ? '#fff' : '#000',
-              }}
-              layout
-            >
-              Log In
-            </motion.button>
+            {/* Clerk Login Button */}
+            <SignedOut>
+              <SignInButton mode="modal">
+                <motion.button
+                  className="hidden md:inline-flex border-0 rounded-lg px-4 py-2 font-medium cursor-pointer transition-all duration-300 relative group"
+                  style={{
+                    backgroundColor: theme === 'light' ? '#111' : '#fff',
+                    color: theme === 'light' ? '#fff' : '#000',
+                  }}
+                  layout
+                >
+                  {/* Neon glow effect */}
+                  <span className="absolute inset-0 rounded-lg bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#2af598,#ff0080)] opacity-0 group-hover:opacity-60 blur-[10px] transition-opacity duration-500"></span>
+                  <span className="relative z-10">Log In</span>
+                </motion.button>
+              </SignInButton>
+            </SignedOut>
+
+            {/* User avatar when signed in */}
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
           </div>
         </div>
 
