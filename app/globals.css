@@ -137,3 +137,26 @@ body.dark {
   background-color: #111;
   color: #fdfdfd;
 }
+@keyframes border-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    filter: blur(10px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(14px);
+  }
+}
+
+.animate-border-spin {
+  animation: border-spin 4s linear infinite, glow-pulse 3s ease-in-out infinite;
+}

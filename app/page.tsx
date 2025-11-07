@@ -1,82 +1,86 @@
 'use client';
-import React, { useState } from 'react';
-import CardNav, { CardNavItem } from './component/dashBoard';
-import Threads from './component/paragraph';
 
+import React from 'react';
+import { motion, Variants } from 'framer-motion';
+import Threads from './component/paragraph';
+import NavbarWrapper from './component/wraper'; // theme wrapper + nav
 
 const Page = () => {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const isDark = theme === 'dark';
+  // Animation variants
+  const fadeDown: Variants = {
+    hidden: { opacity: 0, y: -40 },
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 60, damping: 16, mass: 1.2 } },
+  };
 
-  const toggleTheme = () => setTheme(isDark ? 'light' : 'dark');
-
-  const items: CardNavItem[] = [
-    {
-      label: 'Stories',
-      bgColor: '#312d64ff',
-      textColor: '#fff',
-      links: [
-        { label: 'All Stories', ariaLabel: 'About Company', href: '/company' },
-        { label: 'Trending', ariaLabel: 'About Careers', href: '/careers' },
-      ],
-    },
-    {
-      label: 'Poems',
-      bgColor: '#170D27',
-      textColor: '#fff',
-      links: [
-        { label: 'All Poems', ariaLabel: 'Featured Projects', href: '/projects/featured' },
-        { label: 'Trending', ariaLabel: 'Project Case Studies', href: '/projects/case-studies' },
-      ],
-    },
-    {
-      label: 'About',
-      bgColor: '#271E37',
-      textColor: '#fff',
-      links: [
-        { label: 'Contact', ariaLabel: 'Email us', href: 'mailto:poemsbits@gmail.com' },
-        { label: 'Email', ariaLabel: 'Twitter', href: 'https://twitter.com/example' },
-        { label: 'Address', ariaLabel: 'LinkedIn', href: 'https://linkedin.com/company/example' },
-      ],
-    },
-    
-  ];
+  const fadeUp: Variants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 60, damping: 16, mass: 1.2 } },
+  };
 
   return (
-    <main
-      className={`relative min-h-screen transition-colors duration-500 ${
-        isDark ? 'bg-black text-white' : 'bg-white text-black'
-      }`}
-    >
-      <div className="absolute inset-0 z-0">
-        <Threads
-          enableMouseInteraction
-          color={isDark ? [1, 1, 1] : [0.05, 0.05, 0.05]}
-        />
-      </div>
-
-      <div className="sticky top-0 z-20 bg-transparent backdrop-blur-md">
-        <CardNav
-          logo="logo.png"
-          items={items}
-          theme={theme}
-          toggleTheme={toggleTheme}
-        />
-      </div>
-
-      {/* Page Content */}
-      <section className="relative z-10 flex items-center justify-center italic h-[80vh]">
-        <div className="text-center px-4">
-          <h1 className="text-5xl font-bold">Welcome,
- <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
-    Poems Bits
-  </span>            </h1>
-          <p className="text-lg mt-8  opacity-80">
-            Poems Bits is a curated collection of original poems, essays, and creative experiments — designed to inspire, provoke, and connect. Explore featured pieces, project case studies, and ways to get in touch.
-          </p>
+    <NavbarWrapper>
+      {/* Main page content */}
+      <main className="relative min-h-screen">
+        {/* Threads background */}
+        <div className="absolute inset-0 z-0">
+          <Threads enableMouseInteraction color={undefined} />
         </div>
-      </section>
-    </main>
+
+        {/* Page content */}
+        <section className="relative z-10 flex flex-col items-center justify-center italic min-h-[80vh] px-4 space-y-6">
+          {/* Heading */}
+          <motion.h1
+            className="text-5xl font-bold text-center"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+          >
+            Welcome,{' '}
+            <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+              Poems Bits
+            </span>
+          </motion.h1>
+
+          {/* Subtext */}
+          <motion.p
+            className="text-lg text-center opacity-80 max-w-3xl"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ delay: 0.15 }}
+          >
+            Poems Bits is a curated collection of original poems, essays, and creative experiments —
+            designed to inspire, provoke, and connect. Explore featured pieces, project case studies, and ways to get in touch.
+          </motion.p>
+
+          {/* CTA button */}
+          <motion.div
+            className="flex justify-center mt-5"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ delay: 0.3 }}
+          >
+            <button className="md:hidden relative items-center justify-center rounded-lg px-4 py-2 font-medium cursor-pointer overflow-hidden transition-all duration-300 group">
+              {/* Animated glowing border */}
+              <span className="absolute inset-0 rounded-lg bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#2af598,#ff0080)] animate-border-spin opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-[1px]"></span>
+
+              {/* Glow aura */}
+              <span className="absolute inset-[-4px] rounded-lg bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#2af598,#ff0080)] animate-border-spin opacity-0 group-hover:opacity-70 blur-[8px] transition-opacity duration-500"></span>
+
+              {/* Inner solid background */}
+              <span className="absolute inset-[2px] rounded-lg bg-white dark:bg-black"></span>
+
+           
+              <span className="relative z-10">Log In</span>
+            </button>
+          </motion.div>
+        </section>
+      </main>
+    </NavbarWrapper>
   );
 };
 
