@@ -12,7 +12,6 @@ import {
   UserButton,
 } from '@clerk/nextjs'
 
-
 const playfair = Playfair_Display({
   weight: "700",
   subsets: ["latin"],
@@ -42,6 +41,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en" suppressHydrationWarning>
+      <head>
+      <title>Poems Bits
+         </title>
+ <link rel="icon" href="/logo.png" type="image/png" />      </head>
       <body>
         <ThemeClientWrapper>
           { children}

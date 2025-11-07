@@ -87,7 +87,9 @@ const Page = () => {
             <SignedIn>
               <UserButton afterSignOutUrl="/" />
             </SignedIn>
+            <button></button>
           </motion.div>
+         
         </section>
       </main>
     </NavbarWrapper>
