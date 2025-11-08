@@ -71,9 +71,9 @@ const CardNav: React.FC<CardNavProps> = ({
         }}
         layout // smooth theme transition
       >
-        {/* Top Bar */}
+       
         <div className="card-nav-top relative z-[2] h-[60px] flex items-center justify-between p-2 pl-[1.1rem]">
-          {/* Hamburger */}
+         {/* Hamburger */}
           <div
             onClick={() => setIsExpanded((prev) => !prev)}
             className="hamburger group flex flex-col gap-[6px] cursor-pointer"
@@ -130,14 +130,14 @@ const CardNav: React.FC<CardNavProps> = ({
                   }}
                   layout
                 >
-                  {/* Neon glow effect */}
+                  {/*  glow effect */}
                   <span className="absolute inset-0 rounded-lg bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#2af598,#ff0080)] opacity-0 group-hover:opacity-60 blur-[10px] transition-opacity duration-500"></span>
                   <span className="relative z-10">Log In</span>
                 </motion.button>
               </SignInButton>
             </SignedOut>
 
-            {/* User avatar when signed in */}
+            {/*  avatar when signed in */}
             <SignedIn>
               <UserButton afterSignOutUrl="/" />
             </SignedIn>

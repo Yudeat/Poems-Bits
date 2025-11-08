@@ -41,14 +41,14 @@ const NavbarWrapper: React.FC<NavbarWrapperProps> = ({ children }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mounted, setMounted] = useState(false);
 
-  // Load saved theme from localStorage
+  // Load saved theme 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
     if (savedTheme) setTheme(savedTheme);
     setMounted(true);
   }, []);
 
-  // Apply theme to body for global styling
+  // Apply theme to body 
   useEffect(() => {
     document.body.dataset.theme = theme;
   }, [theme]);

@@ -1,0 +1,21 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Poem {
+  id        Int      @id @default(autoincrement())
+  content   String
+  tags      Tag[]    @relation("PoemTags")
+  createdAt DateTime @default(now())
+}
+
+model Tag {
+  id      Int    @id @default(autoincrement())
+  name    String @unique
+  poems   Poem[] @relation("PoemTags")
+}

@@ -5,11 +5,7 @@ import "./globals.css";
 import ThemeClientWrapper from "./ThemeWrapper";
 import {
   ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
+
 } from '@clerk/nextjs'
 
 const playfair = Playfair_Display({
@@ -31,7 +27,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Poems Bits ",
   description: "A app where you are the writer and poet of your own",
+    icons: {
+    icon: "/logo.png",
+  },
 };
+
 
 export default function RootLayout({
   children,
@@ -41,13 +41,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en" suppressHydrationWarning>
-      <head>
-      <title>Poems Bits
-         </title>
- <link rel="icon" href="/logo.png" type="image/png" />      </head>
-      <body>
+           <body>
+
         <ThemeClientWrapper>
-          { children}
+            { children}
         </ThemeClientWrapper>
       </body>
     </html>
