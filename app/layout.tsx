@@ -1,12 +1,9 @@
-
 import type { Metadata } from "next";
-import { Geist, Geist_Mono ,Playfair_Display} from "next/font/google";
 import "./globals.css";
-import ThemeClientWrapper from "./ThemeWrapper";
-import {
-  ClerkProvider,
 
-} from '@clerk/nextjs'
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import ThemeClientWrapper from "./ThemeWrapper";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const playfair = Playfair_Display({
   weight: "700",
@@ -15,39 +12,39 @@ const playfair = Playfair_Display({
 });
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
   subsets: ["latin"],
+  variable: "--font-geist-sans",
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
-  title: "Poems Bits ",
-  description: "A app where you are the writer and poet of your own",
-    icons: {
+  title: "Poems Bits",
+  description: "An app where you are the writer and poet of your own",
+  icons: {
     icon: "/logo.png",
   },
 };
 
-
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <ClerkProvider>
-    <html lang="en" suppressHydrationWarning>
-           <body>
-
-        <ThemeClientWrapper>
-            { children}
-        </ThemeClientWrapper>
-      </body>
-    </html>
+      <html
+        lang="en"
+        suppressHydrationWarning
+        className={`${playfair.variable} ${geistSans.variable} ${geistMono.variable}`}
+      >
+        <body>
+          <ThemeClientWrapper>{children}</ThemeClientWrapper>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }
