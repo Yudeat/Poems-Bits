@@ -45,6 +45,8 @@
 
 body {
   color: black;
+  margin: 0;
+  padding: 0;
 
 }
 
@@ -133,6 +135,10 @@ body.light {
   color: #111;
 }
 
+.ai-btn {
+  @apply px-3 py-2 text-sm rounded bg-gray-200 dark:bg-gray-700 
+         hover:bg-gray-300 dark:hover:bg-gray-600 transition;
+}
 body.dark {
   background-color: #111;
   color: #fdfdfd;

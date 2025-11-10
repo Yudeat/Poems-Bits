@@ -2,6 +2,10 @@
 
 import React, { useEffect, useState, ReactNode } from 'react';
 import CardNav, { CardNavItem } from './dashBoard';
+import Footer from './footer';
+import Poems from './profile';
+import ScrollReveal from './scrool';
+
 
 const navItems: CardNavItem[] = [
   {
@@ -64,6 +68,7 @@ const NavbarWrapper: React.FC<NavbarWrapperProps> = ({ children }) => {
   if (!mounted) return null;
 
   return (
+
     <div
       className={`transition-colors duration-500 min-h-screen ${
         theme === 'light' ? 'bg-white text-black' : 'bg-black text-white'
@@ -71,6 +76,13 @@ const NavbarWrapper: React.FC<NavbarWrapperProps> = ({ children }) => {
     >
       <CardNav logo="/logo.png" items={navItems} theme={theme} toggleTheme={toggleTheme} />
       {children}
+          
+
+        <Poems/>
+       
+      <Footer theme={theme} />
+  
+
     </div>
   );
 };

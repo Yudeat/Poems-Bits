@@ -42,7 +42,10 @@ export default function RootLayout({
         className={`${playfair.variable} ${geistSans.variable} ${geistMono.variable}`}
       >
         <body>
-          <ThemeClientWrapper>{children}</ThemeClientWrapper>
+          <ThemeClientWrapper>{children}
+
+          
+          </ThemeClientWrapper>
         </body>
       </html>
     </ClerkProvider>

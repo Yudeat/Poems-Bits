@@ -1,28 +1,26 @@
 'use client';
 
 import React from 'react';
+
+
 import { motion, Variants } from 'framer-motion';
 import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
 import NavbarWrapper from './component/wraper';
 import Threads from './component/paragraph';
-import GlassIcons from './component/GlassIcons';
-import { FiFileText, FiBook, FiHeart,  FiEdit, FiBarChart2 } from "react-icons/fi";
+import WritingStudioButton from './component/Write';
+import ReadingPage from './component/rating';
 
-const items = [
-  { icon: <FiFileText />, color: 'blue', label: 'Yours Files' },
-  { icon: <FiBook />, color: 'purple', label: 'Books' },
-  { icon: <FiHeart />, color: 'red', label: 'Favourite' },
-  { icon: <FiEdit />, color: 'orange', label: 'Notes' },
-  { icon: <FiBarChart2 />, color: 'green', label: 'Stats' },
-];
-
+interface Props {
+  theme: "light" | "dark";
+}
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 50 },
   visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 60, damping: 16, mass: 1.2 } },
 };
 
-const Page = () => {
+const Page = ({ theme }: Props) => {
   return (
+  
     <NavbarWrapper>
       <main className="relative min-h-screen">
         <div className="absolute inset-0 z-0">
@@ -32,7 +30,9 @@ const Page = () => {
         <section className="relative z-10 flex flex-col items-center justify-center min-h-[80vh] px-4 space-y-6">
 
 {/* before signout */}
+
           <SignedOut>
+
             <motion.h1
               className="text-5xl font-bold text-center italic"
               variants={fadeUp}
@@ -88,14 +88,15 @@ const Page = () => {
                Select what you wanna do,Don&apos;t Forgot to Donate a Amount to Run this page Ad Free.
               </span>
             </motion.h4>
-            <div style={{ height: "200px", position: "relative" }}>
-              <GlassIcons items={items} className="custom-class" />
-            </div>
+       
+          
           </SignedIn>
-
         </section>
       </main>
+    
+
     </NavbarWrapper>
+  
   );
 };
 
