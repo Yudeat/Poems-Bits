@@ -1,159 +1,189 @@
-"use client";
+'use client';
 
-import { useState, useRef } from "react";
+import { useUser } from "@clerk/nextjs";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-interface Props {
-  theme: "light" | "dark";
+interface WriteProps {
+  theme: 'light' | 'dark';
 }
 
-export default function WritingStudioButton({ theme }: Props) {
-  const [open, setOpen] = useState(false);
-  const [aiOpen, setAiOpen] = useState(false);
-  const [aiLoading, setAiLoading] = useState(false);
-  const [aiResult, setAiResult] = useState("");
-  
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const aiPromptRef = useRef<HTMLTextAreaElement>(null);
+const Write = ({ theme }: WriteProps) => {
+  const { isSignedIn } = useUser();
+  const [title, setTitle] = useState("");
+  const [text, setText] = useState("");
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+  const [isUnderline, setIsUnderline] = useState(false);
+  const [fontSize, setFontSize] = useState(16);
+  const [loading, setLoading] = useState(false);
 
-  const saveText = () => {
-    const content = textareaRef.current?.value || "";
-    localStorage.setItem("writingStudioContent", content);
-    alert("Saved!");
-  };
+  const handleSubmit = async () => {
+    if (!isSignedIn) return alert("You must be signed in to submit a poem!");
+    if (!title || !text) return alert("Title and content are required!");
 
-  const runAI = async (prompt: string) => {
-    const writing = textareaRef.current?.value || "";
-
-    setAiLoading(true);
-
+    setLoading(true);
     try {
-      const res = await fetch("/api/ai", {
+      const res = await fetch("/api/poem", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ writing, request: prompt }),
+        body: JSON.stringify({ title, content: text, published: true }),
       });
-
       const data = await res.json();
-      setAiResult(data.reply);
+      if (!res.ok) alert(data.error || "Failed to save poem");
+      else {
+        alert("Poem saved successfully!");
+        setTitle("");
+        setText("");
+      }
     } catch (err) {
       console.error(err);
-      alert("AI failed");
+      alert("Something went wrong!");
+    } finally {
+      setLoading(false);
     }
-
-    setAiLoading(false);
   };
 
-  const insertAIText = () => {
-    if (!textareaRef.current) return;
-    textareaRef.current.value += "\n\n" + aiResult;
+  // Inline theme styles
+  const colors = {
+    mainBg: theme === 'light' ? '#fefefe' : '#1a1a1a',
+    inputBg: theme === 'light' ? '#fff' : '#222',
+    textColor: theme === 'light' ? '#111' : '#eee',
+    borderColor: theme === 'light' ? '#ccc' : '#444',
+    btnBg: theme === 'light' ? '#111' : '#fff',
+    btnText: theme === 'light' ? '#fff' : '#000',
+    previewBg: theme === 'light' ? '#fff' : '#222',
+    toolbarBg: theme === 'light' ? '#fff' : '#222',
   };
 
   return (
-    <>
-      <motion.button
-        className=" md:inline-flex border-0 rounded-lg px-4 py-2 font-medium cursor-pointer transition-all duration-300 relative group"
-        style={{
-          backgroundColor: theme === "light" ? "#111" : "#fff",
-          color: theme === "light" ? "#fff" : "#000",
-        }}
-        onClick={() => setOpen(true)}
-      >
-        <span className="absolute inset-0 rounded-lg bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#2af598,#ff0080)]
-         opacity-0 group-hover:opacity-60 blur-[10px] transition-opacity duration-500"></span>
-        <span className="relative z-10">Writing Studio</span>
-      </motion.button>
+    <div style={{ display: 'flex', height: '100vh', width: '100%', backgroundColor: colors.mainBg }}>
+      {/* Sidebar */}
+      <nav style={{ width: '80px', borderRight: `2px solid ${colors.borderColor}`, padding: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#f87171' }}>
+        <img src="/logo.png" alt="logo" style={{ marginBottom: '1rem' }} />
+        <span style={{ borderTop: `2px solid ${colors.borderColor}`, width: '100%', marginTop: '1rem' }} />
+      </nav>
 
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="relative w-full max-w-6xl h-full md:h-[90%] bg-gray-50 dark:bg-gray-900 rounded-lg shadow-lg p-6 overflow-auto">
+      {/* Main Content */}
+      <div style={{ flex: 1, padding: '1rem', overflow: 'auto', position: 'relative' }}>
+        {/* Toolbar */}
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          style={{
+            position: 'absolute',
+            top: '1rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            backgroundColor: colors.toolbarBg,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+            borderRadius: '12px',
+            padding: '0.5rem',
+            display: 'flex',
+            gap: '0.5rem',
+            border: `1px solid ${colors.borderColor}`,
+            zIndex: 20,
+          }}
+        >
+          <button onClick={() => setIsBold(!isBold)} style={{ padding: '0.25rem 0.75rem', borderRadius: '6px', border: `1px solid ${colors.borderColor}`, fontWeight: 'bold', background: 'transparent', color: colors.textColor }}>B</button>
+          <button onClick={() => setIsItalic(!isItalic)} style={{ padding: '0.25rem 0.75rem', borderRadius: '6px', border: `1px solid ${colors.borderColor}`, fontStyle: 'italic', background: 'transparent', color: colors.textColor }}>I</button>
+          <button onClick={() => setIsUnderline(!isUnderline)} style={{ padding: '0.25rem 0.75rem', borderRadius: '6px', border: `1px solid ${colors.borderColor}`, textDecoration: 'underline', background: 'transparent', color: colors.textColor }}>U</button>
+          <button onClick={() => setFontSize(fontSize + 2)} style={{ padding: '0.25rem 0.75rem', borderRadius: '6px', border: `1px solid ${colors.borderColor}`, background: 'transparent', color: colors.textColor }}>A+</button>
+          <button onClick={() => setFontSize(fontSize > 10 ? fontSize - 2 : fontSize)} style={{ padding: '0.25rem 0.75rem', borderRadius: '6px', border: `1px solid ${colors.borderColor}`, background: 'transparent', color: colors.textColor }}>A-</button>
+        </motion.div>
 
-            <button
-              onClick={() => setOpen(false)}
-              className="absolute top-4 right-4 text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded"
-            >
-              Close
-            </button>
+        {/* Title Input */}
+        <input
+          type="text"
+          placeholder="Title of your poem"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '0.5rem',
+            marginTop: '4rem',
+            marginBottom: '0.5rem',
+            borderRadius: '12px',
+            border: `1px solid ${colors.borderColor}`,
+            backgroundColor: colors.inputBg,
+            color: colors.textColor,
+            outline: 'none',
+          }}
+        />
 
-            <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">
-              Writing Studio
-            </h1>
+        {/* Textarea */}
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Write something..."
+          style={{
+            width: '100%',
+            height: '160px',
+            padding: '1rem',
+            borderRadius: '12px',
+            resize: 'none',
+            border: `1px solid ${colors.borderColor}`,
+            backgroundColor: colors.inputBg,
+            color: colors.textColor,
+            outline: 'none',
+            fontWeight: isBold ? 700 : 400,
+            fontStyle: isItalic ? 'italic' : 'normal',
+            textDecoration: isUnderline ? 'underline' : 'none',
+            fontSize,
+          }}
+        />
 
-            <textarea
-              ref={textareaRef}
-              defaultValue={localStorage.getItem("writingStudioContent") || ""}
-              className="w-full h-[65vh] p-4 border border-gray-300 dark:border-gray-600 rounded resize-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="Start writing your poem..."
-            />
+        {/* Submit Button */}
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            marginTop: '1rem',
+            borderRadius: '12px',
+            fontWeight: '500',
+            backgroundColor: colors.btnBg,
+            color: colors.btnText,
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+          }}
+        >
+          {loading ? "Saving..." : "Submit"}
+        </button>
 
-            <div className="mt-4 flex gap-2">
-              <button onClick={saveText} className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                Save
-              </button>
-              <button
-                onClick={() => (textareaRef.current!.value = "")}
-                className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-              >
-                Clear
-              </button>
-              <button onClick={() => setAiOpen(true)} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                AI Tools
-              </button>
-            </div>
-
-            {aiOpen && (
-              <div className="mt-6 p-4 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-800">
-                <div className="flex justify-between">
-                  <h2 className="text-lg font-semibold">AI Writing Assistant</h2>
-                  <button onClick={() => setAiOpen(false)} className="text-red-500 font-bold">
-                    ✕
-                  </button>
-                </div>
-
-                {/* AI TEXTBOX */}
-                <textarea
-                  ref={aiPromptRef}
-                  className="mt-2 w-full h-24 p-3 rounded border bg-white dark:bg-gray-900 dark:text-gray-100"
-                  placeholder="Ask anything: 'Continue my poem', 'fix grammar', 'improve tone'..."
-                />
-
-                <button
-                  onClick={() => runAI(aiPromptRef.current?.value || "")}
-                  className="mt-2 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-                >
-                  {aiLoading ? "Thinking..." : "Generate"}
-                </button>
-
-                {/* AI PRESETS */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-4">
-                  <button onClick={() => runAI("Make this more emotional")} className="ai-btn">💗 Emotional</button>
-                  <button onClick={() => runAI("Rewrite this in a more poetic style")} className="ai-btn">🌙 Poetic</button>
-                  <button onClick={() => runAI("Rewrite in Shakespearean style")} className="ai-btn">📜 Shakespeare</button>
-                  <button onClick={() => runAI("Fix grammar and flow")} className="ai-btn">🧹 Grammar</button>
-                  <button onClick={() => runAI("Continue the poem for 4 lines")} className="ai-btn">✨ Autocomplete</button>
-                  <button onClick={() => runAI("Generate a beautiful title for this writing")} className="ai-btn">🏷 Title</button>
-                  <button onClick={() => runAI("Explain the meaning and theme of this poem")} className="ai-btn">📘 Explain</button>
-                  <button onClick={() => runAI("Give a score and improvements for this poem")} className="ai-btn">📊 Score</button>
-                </div>
-
-                {/* AI RESULT */}
-                {aiResult && (
-                  <div className="mt-4 p-3 bg-white dark:bg-gray-700 rounded border">
-                    <h3 className="font-semibold mb-1">AI Result:</h3>
-                    <p className="whitespace-pre-line">{aiResult}</p>
-                    <button
-                      onClick={insertAIText}
-                      className="mt-3 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                    >
-                      Insert Into Writing
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+        {/* Live Preview */}
+        <div
+          style={{
+            marginTop: '2rem',
+            padding: '1rem',
+            borderRadius: '12px',
+            border: `1px solid ${colors.borderColor}`,
+            backgroundColor: colors.previewBg,
+            color: colors.textColor,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          }}
+        >
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+            {title || "Your Title Preview"}
+          </h2>
+          <p
+            style={{
+              fontWeight: isBold ? 700 : 400,
+              fontStyle: isItalic ? 'italic' : 'normal',
+              textDecoration: isUnderline ? 'underline' : 'none',
+              fontSize,
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {text || "Your poem preview will appear here..."}
+          </p>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
-}
+};
+
+export default Write;
