@@ -4,6 +4,7 @@ import React, { useEffect, useState, ReactNode } from 'react';
 import CardNav, { CardNavItem } from './dashBoard';
 import Footer from './footer';
 import Poems from './profile';
+import ReadingPage from './rating';
 
 const navItems: CardNavItem[] = [
   {
@@ -11,17 +12,17 @@ const navItems: CardNavItem[] = [
     bgColor: '#1F2937',
     textColor: '#fff',
     links: [
-      { label: 'Company', href: '/company', ariaLabel: 'About Company' },
-      { label: 'Team', href: '/team', ariaLabel: 'Our Team' },
+      { label: 'Donation', href: '/company', ariaLabel: 'About Company' },
+      { label: 'Poems', href: '/team', ariaLabel: 'Our Team' },
     ],
   },
   {
-    label: 'Services',
+    label: 'Sources',
     bgColor: '#4B5563',
     textColor: '#fff',
     links: [
-      { label: 'Design', href: '/design', ariaLabel: 'Design Services' },
-      { label: 'Development', href: '/dev', ariaLabel: 'Development Services' },
+      { label: 'Company', href: '/design', ariaLabel: 'Design Services' },
+      { label: 'People ', href: '/dev', ariaLabel: 'Development Services' },
     ],
   },
   {
@@ -75,7 +76,7 @@ const NavbarWrapper: React.FC<NavbarWrapperProps> = ({ children }) => {
       <CardNav logo="/logo.png" items={navItems} theme={theme} toggleTheme={toggleTheme} />
       {children}
           
-     
+     <ReadingPage theme={theme}/>
         <Poems/>
        
       <Footer theme={theme} />

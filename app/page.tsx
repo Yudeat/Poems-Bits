@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
 import NavbarWrapper from './component/wraper';
 import Threads from './component/paragraph';
-import Write from './component/Write';
 
 interface Props {
   theme: 'light' | 'dark';
@@ -76,32 +75,28 @@ const Page = ({ theme }: Props) => {
           </SignedOut>
 
           <SignedIn>
-            <motion.h4
-              className="text-xl font-bold text-center italic"
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-            >
-              Here you can read and Write Poems,{' '}
-              <span className="bg-gradient-to-r from-red-400 via-blue-500 to-white bg-clip-text text-transparent">
-                Select what you want to do. Don&apos;t forget to donate to run this page ad-free.
-              </span>
-            </motion.h4>
+           <motion.div
+  className="max-w-4xl mx-auto text-center space-y-4 px-4"
+  variants={fadeUp}
+  initial="hidden"
+  animate="visible"
+>
+  <motion.h2
+    className="text-3xl md:text-5xl lg:text-6xl font-extrabold italic leading-snug"
+  >
+    Welcome to the world of poetry,
+  </motion.h2>
 
-            {/* Buttons */}
-            <div className="mt-10 flex flex-wrap justify-center gap-4">
-              <motion.button
-                onClick={() => setShowWrite(!showWrite)}
-                className="md:inline-flex border-0 mb-4 mr-3 rounded-4xl px-4 py-2 font-medium cursor-pointer transition-all duration-300 relative group"
-                style={{
-                  backgroundColor: theme === 'light' ? '#111' : '#fff',
-                  color: theme === 'light' ? '#fff' : '#000',
-                }}
-              >
-                <span className="relative z-10">Write Poems</span>
-              </motion.button>
 
-            </div>
+
+  <motion.p className="text-lg  leading-relaxed">
+    Choose your path, <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent animate-gradient-x">read or write</span>, and be part of a community that celebrates creativity.  
+    Don’t forget to support us to keep this page ad-free and thriving.
+  </motion.p>
+</motion.div>
+
+
+            
           </SignedIn>
         </section>
 
@@ -116,7 +111,7 @@ const Page = ({ theme }: Props) => {
       exit="exit"
       className={`relative z-10 w-full px-4 mt-10 flex justify-center`}
     >
-      <Write theme={theme} />
+     
     </motion.section>
   )}
 </AnimatePresence>

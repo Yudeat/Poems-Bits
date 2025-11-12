@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Poem" ADD COLUMN     "likes" INTEGER NOT NULL DEFAULT 0;
