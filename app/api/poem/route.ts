@@ -8,10 +8,10 @@ interface PoemBody {
   title: string;
   content: string;
   published?: boolean;
-  name?: string; // optional display name for the user
+  name?: string; 
 }
 
-// ✅ POST: Save a poem
+
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
@@ -23,7 +23,6 @@ export async function POST(req: Request) {
     if (!body.title || !body.content)
       return NextResponse.json({ error: "Title and content required" }, { status: 400 });
 
-    // Fetch Clerk user info
     let clerkUser;
     try {
       clerkUser = await clerkClient.users.getUser(userId);
@@ -33,7 +32,6 @@ export async function POST(req: Request) {
 
     const displayName = body.name || clerkUser.firstName || "Anonymous";
 
-    // Upsert user to store display name if provided
     await prisma.user.upsert({
       where: { id: userId },
       update: { name: displayName },
@@ -65,7 +63,7 @@ export async function POST(req: Request) {
   }
 }
 
-// ✅ GET: Fetch poems with liked info
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -107,7 +105,7 @@ export async function GET(req: Request) {
       likedPoems = likes.map((l) => l.poemId);
     }
 
-    // Ensure every poem has an author name
+    
     const formattedPoems = poems.map((p) => ({
       ...p,
       author: { name: p.author?.name || "Anonymous" },

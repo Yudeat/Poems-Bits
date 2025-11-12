@@ -1,4 +1,4 @@
-// components/Footer.tsx
+
 "use client";
 
 import React from "react";
@@ -18,7 +18,7 @@ export default function Footer({ theme }: FooterProps) {
         backdrop-blur-lg
       `}
     >
-      {/* Floating gradient circles */}
+      
       <div className="absolute top-0 left-0 w-[250px] h-[250px] bg-blue-600/20 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-blue-900/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
 
