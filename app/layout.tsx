@@ -35,20 +35,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
-
-      <html
+       <html
         lang="en"
         suppressHydrationWarning
         className={`${playfair.variable} ${geistSans.variable} ${geistMono.variable}`}
       >
         <body>
+    <ClerkProvider>
+
+   
           <ThemeClientWrapper>{children}
 
           
           </ThemeClientWrapper>
+    
+    </ClerkProvider>
         </body>
       </html>
-    </ClerkProvider>
   );
 }

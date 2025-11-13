@@ -26,6 +26,7 @@ export interface CardNavProps {
   className?: string;
   theme: 'light' | 'dark';
   toggleTheme: () => void;
+  onLinkClick?: (label: string) => void; // new callback
 }
 
 const CardNav: React.FC<CardNavProps> = ({
@@ -35,9 +36,15 @@ const CardNav: React.FC<CardNavProps> = ({
   className = '',
   theme,
   toggleTheme,
+  onLinkClick,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const navRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close menu on outside click
   useEffect(() => {
@@ -50,6 +57,8 @@ const CardNav: React.FC<CardNavProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  if (!mounted) return null;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -61,21 +70,17 @@ const CardNav: React.FC<CardNavProps> = ({
         ref={navRef}
         className="card-nav block p-0 rounded-xl relative overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.25)]"
         style={{
-          backgroundColor:
-            theme === 'light'
-              ? 'rgba(255,255,255,0.25)'
-              : 'rgba(20,20,20,0.35)',
+          backgroundColor: theme === 'light' ? 'rgba(255,255,255,0.25)' : 'rgba(20,20,20,0.35)',
           color: theme === 'light' ? '#000' : '#fff',
           border: theme === 'dark' ? '1px solid rgba(255,255,255,0.2)' : 'none',
           backdropFilter: 'blur(10px)',
         }}
-        layout 
+        layout
       >
-       
         <div className="card-nav-top relative z-[2] h-[60px] flex items-center justify-between p-2 pl-[1.1rem]">
-         {/* Hamburger */}
+          {/* Hamburger */}
           <div
-            onClick={() => setIsExpanded((prev) => !prev)}
+            onClick={() => setIsExpanded(prev => !prev)}
             className="hamburger group flex flex-col gap-[6px] cursor-pointer"
             style={{ color: theme === 'light' ? '#000' : '#fff' }}
           >
@@ -104,7 +109,6 @@ const CardNav: React.FC<CardNavProps> = ({
 
           {/* Right-side buttons */}
           <div className="flex items-center gap-4 pr-2 md:pr-3">
-            {/* Theme toggle */}
             <motion.button
               onClick={toggleTheme}
               className="rounded-full p-2 border transition-all duration-300 hover:scale-110"
@@ -119,7 +123,6 @@ const CardNav: React.FC<CardNavProps> = ({
               {theme === 'light' ? <FaMoon /> : <FaSun />}
             </motion.button>
 
-            {/* Clerk Login Button */}
             <SignedOut>
               <SignInButton mode="modal">
                 <motion.button
@@ -130,14 +133,12 @@ const CardNav: React.FC<CardNavProps> = ({
                   }}
                   layout
                 >
-                  {/*  glow effect */}
                   <span className="absolute inset-0 rounded-lg bg-[conic-gradient(from_0deg,#ff0080,#7928ca,#2af598,#ff0080)] opacity-0 group-hover:opacity-60 blur-[10px] transition-opacity duration-500"></span>
                   <span className="relative z-10">Log In</span>
                 </motion.button>
               </SignInButton>
             </SignedOut>
 
-            {/*  avatar when signed in */}
             <SignedIn>
               <UserButton afterSignOutUrl="/" />
             </SignedIn>
@@ -173,9 +174,7 @@ const CardNav: React.FC<CardNavProps> = ({
                     color: item.textColor,
                   }}
                 >
-                  <div className="text-[18px] md:text-[22px] font-semibold">
-                    {item.label}
-                  </div>
+                  <div className="text-[18px] md:text-[22px] font-semibold">{item.label}</div>
                   <motion.div
                     className="flex flex-col gap-[2px] mt-auto"
                     initial="hidden"
@@ -190,7 +189,12 @@ const CardNav: React.FC<CardNavProps> = ({
                         key={`${lnk.label}-${i}`}
                         href={lnk.href}
                         aria-label={lnk.ariaLabel}
-                        className="flex items-center gap-[6px] text-[15px] md:text-[16px] hover:opacity-75 transition-opacity"
+                        className="flex items-center gap-[6px] text-[15px] md:text-[16px] hover:opacity-75 transition-opacity cursor-pointer"
+                        onClick={e => {
+                          e.preventDefault(); // prevent default link navigation
+                          setIsExpanded(false); // close menu
+                          if (onLinkClick) onLinkClick(lnk.label); // trigger callback
+                        }}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}

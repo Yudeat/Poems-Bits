@@ -12,6 +12,13 @@ interface Poem {
   author: { name: string };
 }
 
+interface Comment {
+  id: number;
+  content: string;
+  author: { name: string };
+  createdAt: string;
+}
+
 interface ReadingProps {
   theme: 'light' | 'dark';
 }
@@ -33,6 +40,12 @@ const Reading = ({ theme }: ReadingProps) => {
   const [isUnderline, setIsUnderline] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   const [loading, setLoading] = useState(false);
+
+  // Comments state
+  const [commentInputs, setCommentInputs] = useState<{ [poemId: number]: string }>({});
+  const [comments, setComments] = useState<{ [poemId: number]: Comment[] }>({});
+  const [showComments, setShowComments] = useState<{ [poemId: number]: boolean }>({});
+  const [loadingComments, setLoadingComments] = useState<{ [poemId: number]: boolean }>({});
 
   const fetchPoems = async (pageNum = 1) => {
     try {
@@ -56,6 +69,36 @@ const Reading = ({ theme }: ReadingProps) => {
 
   const toggleReadMore = (id: number) => {
     setExpandedPoems(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleComments = async (poemId: number) => {
+    // If comments are already shown, just hide
+    if (showComments[poemId]) {
+      setShowComments(prev => ({ ...prev, [poemId]: false }));
+      return;
+    }
+
+    // If comments are already loaded, just show
+    if (comments[poemId]) {
+      setShowComments(prev => ({ ...prev, [poemId]: true }));
+      return;
+    }
+
+    // Fetch comments
+    setLoadingComments(prev => ({ ...prev, [poemId]: true }));
+    try {
+      const res = await fetch(`/api/poem/comments?poemId=${poemId}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to load comments");
+
+      setComments(prev => ({ ...prev, [poemId]: data.comments }));
+      setShowComments(prev => ({ ...prev, [poemId]: true }));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load comments");
+    } finally {
+      setLoadingComments(prev => ({ ...prev, [poemId]: false }));
+    }
   };
 
   const handleLike = async (poemId: number) => {
@@ -109,6 +152,32 @@ const Reading = ({ theme }: ReadingProps) => {
       alert("Something went wrong!");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleComment = async (poemId: number) => {
+    if (!isSignedIn) return alert("Sign in to comment!");
+    const content = commentInputs[poemId];
+    if (!content) return alert("Comment cannot be empty");
+
+    try {
+      const res = await fetch(`/api/poem/comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ poemId, content }),
+      });
+      const data = await res.json();
+      if (!res.ok) return alert(data.error || "Failed to post comment");
+
+      setCommentInputs(prev => ({ ...prev, [poemId]: "" }));
+      setComments(prev => ({
+        ...prev,
+        [poemId]: [...(prev[poemId] || []), data.comment]
+      }));
+      setShowComments(prev => ({ ...prev, [poemId]: true }));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to post comment");
     }
   };
 
@@ -182,6 +251,8 @@ const Reading = ({ theme }: ReadingProps) => {
           const lines = poem.content.split("\n");
           const isExpanded = expandedPoems[poem.id] || false;
           const preview = lines.slice(0, 5).join("\n");
+          const commentsVisible = showComments[poem.id] || false;
+          const poemComments = comments[poem.id] || [];
 
           return (
             <motion.div
@@ -214,7 +285,56 @@ const Reading = ({ theme }: ReadingProps) => {
                   {likedPoems.includes(poem.id) ? "❤️" : "🤍"}
                 </button>
                 <span style={{ color: colors.text }}>{poem.likes} likes</span>
+                <button
+                  onClick={() => toggleComments(poem.id)}
+                  style={{ background: "transparent", border: "none", color: "#3b82f6", cursor: "pointer" }}
+                >
+                  {commentsVisible ? "Hide Comments" : "Show Comments"}
+                </button>
               </div>
+
+              {/* Comments Section */}
+              {commentsVisible && (
+                <div style={{ marginTop: "1rem" }}>
+                  {loadingComments[poem.id] ? (
+                    <p style={{ color: colors.text }}>Loading comments...</p>
+                  ) : (
+                    <>
+                      {poemComments.map(c => (
+                        <div key={c.id} style={{ borderTop: `1px solid ${colors.border}`, padding: "0.5rem 0" }}>
+                          <span style={{ fontWeight: 500 }}>{c.author.name}: </span>
+                          <span>{c.content}</span>
+                        </div>
+                      ))}
+
+                      {isSignedIn && (
+                        <div style={{ display: "flex", marginTop: "0.5rem", gap: "0.5rem" }}>
+                          <input
+                            type="text"
+                            placeholder="Add a comment..."
+                            value={commentInputs[poem.id] || ""}
+                            onChange={e => setCommentInputs(prev => ({ ...prev, [poem.id]: e.target.value }))}
+                            style={{
+                              flex: 1,
+                              padding: "0.5rem",
+                              borderRadius: "8px",
+                              border: `1px solid ${colors.border}`,
+                              backgroundColor: colors.inputBg,
+                              color: colors.text
+                            }}
+                          />
+                          <button
+                            onClick={() => handleComment(poem.id)}
+                            style={{ padding: "0.5rem 1rem", borderRadius: "8px", backgroundColor: colors.btnBg, color: colors.btnText, border: "none" }}
+                          >
+                            Post
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
             </motion.div>
           );
         })}

@@ -6,28 +6,42 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  poemId    Int
+  authorId  String
+  createdAt DateTime @default(now())
 
-model User {
-  id    String   @id
-  email String   @unique
-  name  String?
-  image String?
-  posts Poem[]
-  likes PoemLike[]   
+  poem   Poem  @relation(fields: [poemId], references: [id], onDelete: Cascade)
+  author User  @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
+
 
 model Poem {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   title     String
   content   String
-  published Boolean  @default(false)
+  published Boolean   @default(false)
   authorId  String
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  likes     Int      @default(0)
-  likedBy   PoemLike[]   
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes     Int       @default(0)
+  likedBy   PoemLike[]
+  comments  Comment[]  // <-- add this
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
+
+model User {
+  id     String    @id
+  email  String    @unique
+  name   String?
+  image  String?
+  posts  Poem[]
+  likes  PoemLike[]
+  comments Comment[] // <-- add this
+}
+
 
 model PoemLike {
   id     Int    @id @default(autoincrement())

@@ -85,16 +85,22 @@ export async function GET(req: Request) {
       userId = null;
     }
 
-    const [poems, totalCount] = await Promise.all([
-      prisma.poem.findMany({
-        skip,
-        take: limit,
-        where: { published: true },
-        orderBy,
-        include: { author: { select: { name: true } } }, // fetch author's name
-      }),
-      prisma.poem.count({ where: { published: true } }),
-    ]);
+ const [poems, totalCount] = await Promise.all([
+  prisma.poem.findMany({
+    skip,
+    take: limit,
+    where: { published: true },
+    orderBy,
+    include: {
+      author: { select: { name: true } },
+      comments: {
+        include: { author: { select: { name: true } } },
+        orderBy: { createdAt: "asc" },
+      },
+    },
+  }),
+  prisma.poem.count({ where: { published: true } }),
+]);
 
     let likedPoems: number[] = [];
     if (userId) {
@@ -122,3 +128,35 @@ export async function GET(req: Request) {
     );
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const url = new URL(req.url);
+    const poemIdStr = url.searchParams.get("id");
+    if (!poemIdStr) return NextResponse.json({ error: "Poem ID required" }, { status: 400 });
+
+    const poemId = parseInt(poemIdStr, 10);
+    if (isNaN(poemId)) return NextResponse.json({ error: "Invalid Poem ID" }, { status: 400 });
+
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+
+    // Fetch poem and check author
+    const poem = await prisma.poem.findUnique({ where: { id: poemId } });
+    if (!poem) return NextResponse.json({ error: "Poem not found" }, { status: 404 });
+
+    if (poem.authorId !== userId)
+      return NextResponse.json({ error: "You can only delete your own poems" }, { status: 403 });
+
+    await prisma.poem.delete({ where: { id: poemId } });
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("Error deleting poem:", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Server error" },
+      { status: 500 }
+    );
+  }
+}
+

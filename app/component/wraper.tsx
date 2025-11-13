@@ -1,14 +1,11 @@
 'use client';
 
 import React, { useEffect, useState, ReactNode } from 'react';
-import dynamic from 'next/dynamic';
+import CardNav, { CardNavItem } from './dashBoard';
 import Footer from './footer';
 import Poems from './profile';
 import ReadingPage from './rating';
-import type { CardNavItem } from './dashBoard';
-
-// Lazy-load CardNav to prevent Clerk context errors
-const CardNav = dynamic(() => import('./dashBoard'), { ssr: false });
+import YourPoems from './YourPoems'; // your new component
 
 const navItems: CardNavItem[] = [
   {
@@ -25,8 +22,8 @@ const navItems: CardNavItem[] = [
     bgColor: '#4B5563',
     textColor: '#fff',
     links: [
-      { label: 'Company', href: '/design', ariaLabel: 'Design Services' },
-      { label: 'People ', href: '/dev', ariaLabel: 'Development Services' },
+      { label: 'You', href: '/you', ariaLabel: 'Poems By You' },
+      { label: 'People', href: '/dev', ariaLabel: 'Development Services' },
     ],
   },
   {
@@ -47,6 +44,7 @@ interface NavbarWrapperProps {
 const NavbarWrapper: React.FC<NavbarWrapperProps> = ({ children }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mounted, setMounted] = useState(false);
+  const [activePage, setActivePage] = useState<'home' | 'yourPoems'>('home');
 
   // Load saved theme
   useEffect(() => {
@@ -68,19 +66,38 @@ const NavbarWrapper: React.FC<NavbarWrapperProps> = ({ children }) => {
     });
   };
 
+  // Handle nav link clicks
+  const handleNavClick = (label: string) => {
+    if (label === 'You') setActivePage('yourPoems');
+    else setActivePage('home');
+  };
+
   if (!mounted) return null;
 
   return (
-    <div className={`transition-colors duration-500 min-h-screen ${theme === 'light' ? 'bg-white text-black' : 'bg-black text-white'}`}>
-      {/* Lazy-loaded CardNav */}
-      <CardNav logo="/logo.png" items={navItems} theme={theme} toggleTheme={toggleTheme} />
+    <div
+      className={`transition-colors duration-500 min-h-screen ${
+        theme === 'light' ? 'bg-white text-black' : 'bg-black text-white'
+      }`}
+    >
+      <CardNav
+        logo="/logo.png"
+        items={navItems}
+        theme={theme}
+        toggleTheme={toggleTheme}
+        onLinkClick={handleNavClick} // callback when nav link is clicked
+      />
 
-      {/* Children passed from pages */}
-      {children}
+      {activePage === 'home' && (
+        <>
+          {children}
+          <ReadingPage theme={theme} />
+          <Poems />
+        </>
+      )}
 
-      {/* Other sections */}
-      <ReadingPage theme={theme} />
-      <Poems />
+      {activePage === 'yourPoems' && <YourPoems />}
+
       <Footer theme={theme} />
     </div>
   );
