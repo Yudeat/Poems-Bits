@@ -1,10 +1,14 @@
 'use client';
 
 import React, { useEffect, useState, ReactNode } from 'react';
-import CardNav, { CardNavItem } from './dashBoard';
+import dynamic from 'next/dynamic';
 import Footer from './footer';
 import Poems from './profile';
 import ReadingPage from './rating';
+import type { CardNavItem } from './dashBoard';
+
+// Lazy-load CardNav to prevent Clerk context errors
+const CardNav = dynamic(() => import('./dashBoard'), { ssr: false });
 
 const navItems: CardNavItem[] = [
   {
@@ -44,20 +48,20 @@ const NavbarWrapper: React.FC<NavbarWrapperProps> = ({ children }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mounted, setMounted] = useState(false);
 
-  // Load saved theme 
+  // Load saved theme
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
     if (savedTheme) setTheme(savedTheme);
     setMounted(true);
   }, []);
 
-  // Apply theme to body 
+  // Apply theme to body
   useEffect(() => {
     document.body.dataset.theme = theme;
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prev) => {
+    setTheme(prev => {
       const next = prev === 'light' ? 'dark' : 'light';
       localStorage.setItem('theme', next);
       return next;
@@ -67,21 +71,17 @@ const NavbarWrapper: React.FC<NavbarWrapperProps> = ({ children }) => {
   if (!mounted) return null;
 
   return (
-
-    <div
-      className={`transition-colors duration-500 min-h-screen ${
-        theme === 'light' ? 'bg-white text-black' : 'bg-black text-white'
-      }`}
-    >
+    <div className={`transition-colors duration-500 min-h-screen ${theme === 'light' ? 'bg-white text-black' : 'bg-black text-white'}`}>
+      {/* Lazy-loaded CardNav */}
       <CardNav logo="/logo.png" items={navItems} theme={theme} toggleTheme={toggleTheme} />
-      {children}
-          
-     <ReadingPage theme={theme}/>
-        <Poems/>
-       
-      <Footer theme={theme} />
-  
 
+      {/* Children passed from pages */}
+      {children}
+
+      {/* Other sections */}
+      <ReadingPage theme={theme} />
+      <Poems />
+      <Footer theme={theme} />
     </div>
   );
 };

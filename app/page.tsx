@@ -3,11 +3,15 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
+import dynamic from 'next/dynamic';
 import NavbarWrapper from './component/wraper';
 import Threads from './component/paragraph';
 
+// Lazy-load Write to avoid SSR issues
+const Write = dynamic(() => import('./component/write'), { ssr: false });
+
 interface Props {
-  theme: 'light' | 'dark';
+  theme?: 'light' | 'dark';
 }
 
 const fadeUp = {
@@ -21,7 +25,7 @@ const slideDown = {
   exit: { opacity: 0, y: -20, transition: { duration: 0.3, ease: 'easeIn' } },
 };
 
-const Page = ({ theme }: Props) => {
+const Page: React.FC<Props> = ({ theme }) => {
   const [showWrite, setShowWrite] = useState(false);
 
   return (
@@ -75,46 +79,51 @@ const Page = ({ theme }: Props) => {
           </SignedOut>
 
           <SignedIn>
-           <motion.div
-  className="max-w-4xl mx-auto text-center space-y-4 px-4"
-  variants={fadeUp}
-  initial="hidden"
-  animate="visible"
->
-  <motion.h2
-    className="text-3xl md:text-5xl lg:text-6xl font-extrabold italic leading-snug"
-  >
-    Welcome to the world of poetry,
-  </motion.h2>
+            <motion.div
+              className="max-w-4xl mx-auto text-center space-y-4 px-4"
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold italic leading-snug">
+                Welcome to the world of poetry,
+              </motion.h2>
 
+              <motion.p className="text-lg leading-relaxed">
+                Choose your path,{' '}
+                <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent animate-gradient-x">
+                  read or write
+                </span>
+                , and be part of a community that celebrates creativity.  
+                Don’t forget to support us to keep this page ad-free and thriving.
+              </motion.p>
 
-
-  <motion.p className="text-lg  leading-relaxed">
-    Choose your path, <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent animate-gradient-x">read or write</span>, and be part of a community that celebrates creativity.  
-    Don’t forget to support us to keep this page ad-free and thriving.
-  </motion.p>
-</motion.div>
-
-
-            
+              {/* Show Write button */}
+              <button
+                onClick={() => setShowWrite(prev => !prev)}
+                className="mt-4 px-6 py-2 rounded-lg bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-semibold hover:scale-105 transition-transform"
+              >
+                {showWrite ? 'Hide Write Section' : 'Write a Poem'}
+              </button>
+            </motion.div>
           </SignedIn>
         </section>
 
-        {/* Write Section Below Buttons */}
-       <AnimatePresence>
-  {showWrite && (
-    <motion.section
-      key="write-section"
-      variants={slideDown}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      className={`relative z-10 w-full px-4 mt-10 flex justify-center`}
-    >
-     
-    </motion.section>
-  )}
-</AnimatePresence>
+        {/* Write Section Below */}
+        <AnimatePresence>
+          {showWrite && (
+            <motion.section
+              key="write-section"
+              variants={slideDown}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="relative z-10 w-full px-4 mt-10 flex justify-center"
+            >
+              <Write theme={theme} />
+            </motion.section>
+          )}
+        </AnimatePresence>
       </main>
     </NavbarWrapper>
   );
