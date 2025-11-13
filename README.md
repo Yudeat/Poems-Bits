@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Poetry Hub
 
-## Getting Started
+A modern web application to read, write, and share poems. Users can explore inspiring poems, write their own, like and support content creators, and enjoy an ad-free creative experience.
 
-First, run the development server:
+Features
 
-```bash
+Read Poems: Browse poems from the community with pagination and like functionality.
+
+Write Poems: Compose poems with rich text options (bold, italic, underline, font size).
+
+Author Display: Publish poems under a chosen display name or your Clerk profile name.
+
+Like/Unlike: Interact with poems and track liked poems.
+
+Responsive Design: Works beautifully on desktop, tablet, and mobile.
+
+Theme Toggle: Switch between light and dark mode.
+
+Ad-Free Support: Option to donate and keep the platform ad-free.
+
+Tech Stack
+
+Frontend: React, Next.js, TypeScript, Tailwind CSS, Framer Motion
+
+Authentication: Clerk (Sign In / Sign Up)
+
+Backend / API: Next.js API Routes
+
+Database: PostgreSQL + Prisma ORM
+
+Deployment Ready: Fully compatible with Vercel or custom Node.js hosting
+
+Getting Started
+1. Clone the repo
+git clone https://github.com/your-username/poetry-hub.git
+cd poetry-hub
+
+2. Install dependencies
+npm install
+# or
+yarn install
+
+3. Setup Environment Variables
+
+Create a .env file in the root:
+
+DATABASE_URL="postgresql://username:password@host:port/dbname"
+NEXT_PUBLIC_CLERK_FRONTEND_API="your-clerk-frontend-api"
+CLERK_API_KEY="your-clerk-api-key"
+
+4. Migrate the database
+npx prisma migrate dev --name init
+
+5. Run the app
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open http://localhost:3000
+ to view your app.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+📂 Project Structure
+/app
+  /api
+    poem/        # API routes for poems (GET, POST)
+    like/        # API route for likes
+  /components    # Reusable React components
+  /context       # Theme or global context (optional)
+  /pages         # Pages if using pages directory
+/lib
+  prisma.ts      # Prisma client instance
+/public
+  logo.png       # Logo & assets
 
-## Learn More
+Scripts
 
-To learn more about Next.js, take a look at the following resources:
+npm run dev – Start the development server
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+npm run build – Build production files
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+npm run start – Start production server
 
-## Deploy on Vercel
+npx prisma studio – Open Prisma Studio for database management
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Authentication
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Powered by Clerk
+
+Sign in with email/password or third-party providers
+
+Display name can be customized when publishing poems
+
+Design
+
+Modern UI with gradient highlights
+
+Interactive toolbar for formatting poems
+
+Responsive layout for all devices
+
+Framer Motion animations for smooth transitions
+
+ Future Improvements
+
+User profiles and poem history
+
+Commenting and community interaction
+
+Poetry search and categories
+
+Dark/light theme persistence
+
+Export poems as PDF
+
+License
+
+This project is MIT Licensed – see the LICENSE
+ file for details.
