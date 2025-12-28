@@ -23,7 +23,6 @@ export async function POST(req: Request) {
         { status: 400 }
       );
 
-    // ✅ Check if user already liked this poem
     const existing = await prisma.poemLike.findUnique({
       where: { userId_poemId: { userId, poemId } },
     });
@@ -31,7 +30,6 @@ export async function POST(req: Request) {
     let likes: number;
 
     if (existing) {
-      // ✅ Unlike the poem
       await prisma.poemLike.delete({
         where: { userId_poemId: { userId, poemId } },
       });
@@ -43,7 +41,6 @@ export async function POST(req: Request) {
 
       likes = updated.likes;
     } else {
-      // ✅ Like the poem
       await prisma.poemLike.create({ data: { userId, poemId } });
 
       const updated = await prisma.poem.update({
