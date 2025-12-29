@@ -24,7 +24,7 @@ interface ReadingProps {
 }
 
 const Reading = ({ theme }: ReadingProps) => {
-  const { isSignedIn, user } = useUser();
+  const { isSignedIn } = useUser();
   const [poems, setPoems] = useState<Poem[]>([]);
   const [expandedPoems, setExpandedPoems] = useState<{ [id: number]: boolean }>({});
   const [likedPoems, setLikedPoems] = useState<number[]>([]);

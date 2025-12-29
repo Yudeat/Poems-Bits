@@ -42,7 +42,7 @@ export async function POST(req: Request) {
 
     if (existing) {
       // 4a. UNLIKE: Use a transaction to ensure both operations succeed together
-      const [_, updatedPoem] = await prisma.$transaction([
+      const [, updatedPoem] = await prisma.$transaction([
         prisma.poemLike.delete({
           where: {
             userId_poemId: { userId, poemId },
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
       updatedLikesCount = updatedPoem.likes;
     } else {
       // 4b. LIKE: Use a transaction to ensure both operations succeed together
-      const [_, updatedPoem] = await prisma.$transaction([
+      const [, updatedPoem] = await prisma.$transaction([
         prisma.poemLike.create({
           data: { userId, poemId },
         }),
