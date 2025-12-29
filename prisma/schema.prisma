@@ -27,7 +27,7 @@ model Poem {
   author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   likes     Int       @default(0)
   likedBy   PoemLike[]
-  comments  Comment[]  // <-- add this
+  comments  Comment[]  
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
@@ -39,7 +39,7 @@ model User {
   image  String?
   posts  Poem[]
   likes  PoemLike[]
-  comments Comment[] // <-- add this
+  comments Comment[] 
 }
 
 
@@ -51,5 +51,5 @@ model PoemLike {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   poem Poem @relation(fields: [poemId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, poemId])
+  @@unique([userId, poemId],name:"userId_poemId")
 }
