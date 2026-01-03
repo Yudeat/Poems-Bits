@@ -2,9 +2,7 @@ export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
-import { clerkClient} from "@clerk/backend";
-
+import { auth ,createClerkClient} from "@clerk/nextjs/server";
 
 interface PoemBody {
   title: string;
