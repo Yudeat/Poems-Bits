@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
     let clerkUser;
     try {
-      clerkUser = await createclerkClient.users.getUser(userId);
+      clerkUser = await createClerkClient.users.getUser(userId);
     } catch {
       clerkUser = { firstName: "", emailAddresses: [] };
     }
