@@ -44,7 +44,8 @@ export default function RootLayout({
     <ClerkProvider>
 
    
-          <ThemeClientWrapper>{children}
+          <ThemeClientWrapper>
+            {children}
 
           
           </ThemeClientWrapper>
