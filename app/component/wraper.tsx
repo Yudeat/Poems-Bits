@@ -5,7 +5,9 @@ import CardNav, { CardNavItem } from './dashBoard';
 import Footer from './footer';
 import Poems from './profile';
 import ReadingPage from './rating';
-import YourPoems from './YourPoems'; // your new component
+import YourPoems from './YourPoems'; 
+
+// nav items for the card navigation
 
 const navItems: CardNavItem[] = [
   {

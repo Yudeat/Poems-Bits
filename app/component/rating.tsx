@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useUser } from "@clerk/nextjs";
-
+// type for poem
 interface Poem {
   id: number;
   title: string;
@@ -100,6 +100,7 @@ const Reading = ({ theme }: ReadingProps) => {
       setLoadingComments(prev => ({ ...prev, [poemId]: false }));
     }
   };
+  // handle like
 
   const handleLike = async (poemId: number) => {
     try {
@@ -126,6 +127,7 @@ const Reading = ({ theme }: ReadingProps) => {
     }
   };
 
+  // handle publish
   const handlePublish = async () => {
     if (!isSignedIn) return alert("You must be signed in to publish!");
     if (!title || !text) return alert("Title and content required!");
@@ -154,7 +156,7 @@ const Reading = ({ theme }: ReadingProps) => {
       setLoading(false);
     }
   };
-
+// handle comment
   const handleComment = async (poemId: number) => {
     if (!isSignedIn) return alert("Sign in to comment!");
     const content = commentInputs[poemId];
@@ -180,6 +182,7 @@ const Reading = ({ theme }: ReadingProps) => {
       alert("Failed to post comment");
     }
   };
+  // colors
 
   const colors = {
     bg: theme === "light" ? "#fefefe" : "#1a1a1a",
