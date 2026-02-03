@@ -1,4 +1,4 @@
-Poetry Hub
+Poems Bits 
 
 A modern web application to read, write, and share poems. Users can explore inspiring poems, write their own, like and support content creators, and enjoy an ad-free creative experience.
 
