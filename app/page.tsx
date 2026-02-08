@@ -75,7 +75,7 @@ const Page = () => {
         <AnimatePresence>
           {showWrite && (
             <motion.section key="write-section" variants={slideDown} initial="hidden" animate="visible" exit="exit" className="relative z-10 w-full px-4 mt-10 flex justify-center">
-              {/* Write component goes here */}
+             
             </motion.section>
           )}
         </AnimatePresence>

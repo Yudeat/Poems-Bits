@@ -6,6 +6,7 @@ import Footer from './footer';
 import Poems from './profile';
 import ReadingPage from './rating';
 import YourPoems from './YourPoems'; 
+import Newsletter from './Newsletter';
 
 // nav items for the card navigation
 
@@ -99,6 +100,7 @@ const NavbarWrapper: React.FC<NavbarWrapperProps> = ({ children }) => {
       )}
 
       {activePage === 'yourPoems' && <YourPoems />}
+      <Newsletter theme={theme} />
 
       <Footer theme={theme} />
     </div>

@@ -75,26 +75,7 @@ export default function Footer({ theme }: FooterProps) {
           </ul>
         </div>
 
-        {/* Newsletter */}
-        <div>
-          <h3 className="text-xl font-semibold mb-3">Join Newsletter</h3>
-          <input
-            type="email"
-            placeholder="Enter your email"
-            className={`
-              w-full p-3 rounded-lg text-sm placeholder-opacity-50 focus:outline-none mb-3
-              ${isLight ? "bg-black/10 placeholder-black/50 text-black" : "bg-white/10 placeholder-white/50 text-white"}
-            `}
-          />
-          <button
-            className={`
-              w-full p-3 rounded-lg text-sm transition
-              ${isLight ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"}
-            `}
-          >
-            Subscribe
-          </button>
-        </div>
+        
       </div>
 
       <p className="relative z-10 text-center text-sm opacity-60 mt-14">
