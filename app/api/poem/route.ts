@@ -68,7 +68,6 @@ export async function POST(req: Request) {
   }
 }
 
-// Derive type from a helper function — avoids Prisma generic constraint issues
 function getPoemWithRelations() {
   return prisma.poem.findFirst({
     include: {
