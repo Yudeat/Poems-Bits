@@ -2,16 +2,14 @@ export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@prisma/client";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
 interface PoemBody {
   title: string;
   content: string;
   published?: boolean;
-  name?: string; 
+  name?: string;
 }
-
 
 export async function POST(req: Request) {
   try {
@@ -50,7 +48,6 @@ export async function POST(req: Request) {
       },
     });
 
-  
     const poem = await prisma.poem.create({
       data: {
         title: body.title,
@@ -58,7 +55,7 @@ export async function POST(req: Request) {
         published: body.published ?? true,
         authorId: userId,
       },
-      include: { author: { select: { name: true } } }, // get author name
+      include: { author: { select: { name: true } } },
     });
 
     return NextResponse.json({ success: true, poem }, { status: 201 });
@@ -71,6 +68,20 @@ export async function POST(req: Request) {
   }
 }
 
+// Derive type from a helper function — avoids Prisma generic constraint issues
+function getPoemWithRelations() {
+  return prisma.poem.findFirst({
+    include: {
+      author: { select: { name: true } },
+      comments: {
+        include: { author: { select: { name: true } } },
+        orderBy: { createdAt: "asc" as const },
+      },
+    },
+  });
+}
+
+type PoemWithRelations = NonNullable<Awaited<ReturnType<typeof getPoemWithRelations>>>;
 
 export async function GET(req: Request) {
   try {
@@ -93,15 +104,6 @@ export async function GET(req: Request) {
       userId = null;
     }
 
-    type PoemWithRelations = Prisma.PoemGetPayload<{
-      include: {
-        author: { select: { name: true } };
-        comments: {
-          include: { author: { select: { name: true } } };
-        };
-      };
-    }>;
-
     const [poems, totalCount]: [PoemWithRelations[], number] = await Promise.all([
       prisma.poem.findMany({
         skip,
@@ -122,14 +124,13 @@ export async function GET(req: Request) {
     let likedPoems: number[] = [];
     if (userId) {
       const likes = await prisma.poemLike.findMany({
-        where: { userId, poemId: { in: poems.map((p) => p.id) } },
+        where: { userId, poemId: { in: poems.map((p: PoemWithRelations) => p.id) } },
         select: { poemId: true },
       });
-      likedPoems = likes.map((l) => l.poemId);
+      likedPoems = likes.map((l: { poemId: number }) => l.poemId);
     }
 
-    
-    const formattedPoems = poems.map((p) => ({
+    const formattedPoems = poems.map((p: PoemWithRelations) => ({
       ...p,
       author: { name: p.author?.name || "Anonymous" },
     }));
@@ -158,7 +159,6 @@ export async function DELETE(req: Request) {
     const { userId } = await auth();
     if (!userId) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
-    // Fetch poem and check author
     const poem = await prisma.poem.findUnique({ where: { id: poemId } });
     if (!poem) return NextResponse.json({ error: "Poem not found" }, { status: 404 });
 

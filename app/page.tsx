@@ -67,16 +67,34 @@ const Page = () => {
                   read or write
                 </span>
                 , and be part of a community that celebrates creativity.  
-                Don’t forget to support us to keep this page ad-free and thriving.
+                Don't forget to support us to keep this page ad-free and thriving.
               </motion.p>
+
+              {/* Write section toggle button */}
+              <motion.div className="flex justify-center mt-4" variants={fadeUp} initial="hidden" animate="visible" transition={{ delay: 0.2 }}>
+                <button
+                  onClick={() => setShowWrite((prev) => !prev)}
+                  className="relative items-center justify-center rounded-lg px-4 py-2 font-medium cursor-pointer overflow-hidden transition-all duration-300 group"
+                >
+                  <span className="absolute inset-[2px] rounded-lg bg-white dark:bg-black"></span>
+                  <span className="relative z-10">{showWrite ? 'Close' : 'Write a Poem'}</span>
+                </button>
+              </motion.div>
             </motion.div>
           </SignedIn>
         </section>
 
         <AnimatePresence>
           {showWrite && (
-            <motion.section key="write-section" variants={slideDown} initial="hidden" animate="visible" exit="exit" className="relative z-10 w-full px-4 mt-10 flex justify-center">
-             
+            <motion.section
+              key="write-section"
+              variants={slideDown}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="relative z-10 w-full px-4 mt-10 flex justify-center"
+            >
+              {/* Write poem content goes here */}
             </motion.section>
           )}
         </AnimatePresence>
