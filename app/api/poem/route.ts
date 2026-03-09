@@ -2,7 +2,7 @@ export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth ,createClerkClient} from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 interface PoemBody {
   title: string;
@@ -23,9 +23,16 @@ export async function POST(req: Request) {
     if (!body.title || !body.content)
       return NextResponse.json({ error: "Title and content required" }, { status: 400 });
 
-    let clerkUser;
+    let clerkUser: { firstName: string | null; emailAddresses: Array<{ emailAddress: string }> };
     try {
-      clerkUser = await createClerkClient.users.getUser(userId);
+      const client = await clerkClient();
+      const user = await client.users.getUser(userId);
+      clerkUser = {
+        firstName: user.firstName,
+        emailAddresses: user.emailAddresses.map((email) => ({
+          emailAddress: email.emailAddress,
+        })),
+      };
     } catch {
       clerkUser = { firstName: "", emailAddresses: [] };
     }
@@ -159,4 +166,3 @@ export async function DELETE(req: Request) {
     );
   }
 }
-
