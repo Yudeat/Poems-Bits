@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
 interface PoemBody {
@@ -92,22 +93,31 @@ export async function GET(req: Request) {
       userId = null;
     }
 
- const [poems, totalCount] = await Promise.all([
-  prisma.poem.findMany({
-    skip,
-    take: limit,
-    where: { published: true },
-    orderBy,
-    include: {
-      author: { select: { name: true } },
-      comments: {
-        include: { author: { select: { name: true } } },
-        orderBy: { createdAt: "asc" },
-      },
-    },
-  }),
-  prisma.poem.count({ where: { published: true } }),
-]);
+    type PoemWithRelations = Prisma.PoemGetPayload<{
+      include: {
+        author: { select: { name: true } };
+        comments: {
+          include: { author: { select: { name: true } } };
+        };
+      };
+    }>;
+
+    const [poems, totalCount]: [PoemWithRelations[], number] = await Promise.all([
+      prisma.poem.findMany({
+        skip,
+        take: limit,
+        where: { published: true },
+        orderBy,
+        include: {
+          author: { select: { name: true } },
+          comments: {
+            include: { author: { select: { name: true } } },
+            orderBy: { createdAt: "asc" },
+          },
+        },
+      }),
+      prisma.poem.count({ where: { published: true } }),
+    ]);
 
     let likedPoems: number[] = [];
     if (userId) {
