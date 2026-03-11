@@ -23,7 +23,7 @@ export default function Newsletter({ theme }: FooterProps) {
         <div className="relative max-w-7xl mx-auto flex flex-col items-center text-center md:items-start md:text-left">
           <h2 className={`text-3xl md:text-4xl font-black tracking-tight mb-6 ${isLight ? "text-gray-900" : "text-white"}`}>
             Explore a world of worded adventures <br className="hidden md:block" />
-            <span className="text-pink-600">Let’s write it up.</span>
+            <span className="text-blue-600">Let’s write it up.</span>
           </h2>
           
           <div className={`text-lg md:text-xl mb-10 max-w-2xl leading-relaxed ${isLight ? "text-gray-600" : "text-zinc-400"}`}>
@@ -34,7 +34,7 @@ export default function Newsletter({ theme }: FooterProps) {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <button className="px-10 py-4 rounded-full text-base font-bold bg-pink-600 text-white shadow-lg shadow-pink-500/20 hover:bg-pink-700 hover:-translate-y-1 transition-all active:scale-95">
+            <button className="px-10 py-4 rounded-full text-base font-bold bg-blue-600 text-white shadow-lg shadow-pink-500/20 hover:bg-pink-700 hover:-translate-y-1 transition-all active:scale-95">
               Get Started for Free
             </button>
             <button className={`px-10 py-4 rounded-full text-base font-bold border transition-all active:scale-95 shadow-sm hover:-translate-y-1 ${
@@ -56,7 +56,7 @@ export default function Newsletter({ theme }: FooterProps) {
           `}
         >
           <div className="max-w-lg text-center lg:text-left">
-            <div className="text-sm font-bold uppercase tracking-widest text-pink-600 mb-3">Newsletter</div>
+            <div className="text-sm font-bold uppercase tracking-widest text-blue-600 mb-3">Newsletter</div>
             <h3 className={`text-3xl md:text-4xl font-extrabold tracking-tight mb-4 ${isLight ? "text-gray-900" : "text-white"}`}>
               Stay in the loop.
             </h3>
